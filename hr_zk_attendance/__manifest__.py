@@ -32,8 +32,6 @@
     'maintainer': 'Cybrosys Techno Solutions',
     'website': "https://www.cybrosys.com",
     'depends': ['base_setup', 'hr_attendance'],
-    'external_dependencies': {
-        'python': ['pyzk'], },
     'data': [
         'security/ir.model.access.csv',
         'views/biometric_device_details_views.xml',
