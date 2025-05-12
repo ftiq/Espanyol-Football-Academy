@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+# Add vendored pyzk package to Python path
+import sys, os
+
+# Ensure 'pyzk' directory under module is discoverable
+MODULE_PATH = os.path.dirname(__file__)
+sys.path.insert(0, os.path.join(MODULE_PATH, 'pyzk'))
+
+# Now import models
+from . import models
+# -*- coding: utf-8 -*-
 ################################################################################
 #
 #    Cybrosys Technologies Pvt. Ltd.
