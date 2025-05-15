@@ -19,21 +19,18 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 ################################################################################
+# -*- coding: utf-8 -*-
 {
     'name': 'Biometric Device Integration',
     'version': '18.0.1.0.0',
     'category': 'Human Resources',
-    'summary': "Integrating Biometric Device (Model: ZKteco uFace 202) With HR"
-               "Attendance (Face + Thumb)",
-    'description': "This module integrates Odoo with the biometric"
-                   "device(Model: ZKteco uFace 202),odoo18,odoo,hr,attendance",
+    'summary': "Integrating Biometric Device (Model: ZKteco uFace 202) With HR Attendance (Face + Thumb)",
+    'description': "This module integrates Odoo with the biometric device (Model: ZKteco uFace 202), odoo18, odoo, hr, attendance",
     'author': 'Cybrosys Techno Solutions',
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
-    'website': "https://www.cybrosys.com",
+    'website': 'https://www.cybrosys.com',
     'depends': ['base_setup', 'hr_attendance'],
-    'external_dependencies': {
-        'python': ['pyzk'], },
     'data': [
         'security/ir.model.access.csv',
         'views/biometric_device_details_views.xml',
