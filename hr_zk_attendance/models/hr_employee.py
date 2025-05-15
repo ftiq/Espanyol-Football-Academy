@@ -23,8 +23,10 @@ from odoo import fields, models
 
 
 class HrEmployee(models.Model):
-    """Inherit the model to add field"""
+    """Inherit hr.employee to add Biometric Device ID field"""
     _inherit = 'hr.employee'
 
-    device_id_num = fields.Char(string='Biometric Device ID',
-                                help="Give the biometric device id")
+    device_id_num = fields.Char(
+        string='Biometric Device ID',
+        help='The unique identifier of the employee on the biometric device'
+    )
