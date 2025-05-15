@@ -19,4 +19,9 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 ################################################################################
+import sys, os
+
+MODULE_PATH = os.path.dirname(__file__)
+sys.path.insert(0, os.path.join(MODULE_PATH, 'pyzk'))
+
 from . import models
