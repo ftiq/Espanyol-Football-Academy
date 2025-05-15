@@ -19,34 +19,32 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 ################################################################################
-from odoo import api, fields, models
-
+from odoo import fields, models
 
 class ZkMachineAttendance(models.Model):
-    """Model to hold data from the biometric device"""
+    """Model to hold raw biometric attendance records"""
     _name = 'zk.machine.attendance'
-    _description = 'Attendance'
-    _inherit = 'hr.attendance'
+    _description = 'ZK Machine Attendance'
+    _order = 'punching_time desc'
 
-    @api.constrains('check_in', 'check_out', 'employee_id')
-    def _check_validity(self):
-        """Overriding the __check_validity function for employee attendance."""
-        pass
-
+    employee_id = fields.Many2one('hr.employee', string='Employee',
+                                  help='Related Odoo employee')
     device_id_num = fields.Char(string='Biometric Device ID',
-                                help="The ID of the Biometric Device")
-    punch_type = fields.Selection([('0', 'Check In'), ('1', 'Check Out'),
-                                   ('2', 'Break Out'), ('3', 'Break In'),
-                                   ('4', 'Overtime In'), ('5', 'Overtime Out'),
-                                   ('255', 'Duplicate')],
-                                  string='Punching Type',
-                                  help='Punching type of the attendance')
-    attendance_type = fields.Selection([('1', 'Finger'), ('15', 'Face'),
-                                        ('2', 'Type_2'), ('3', 'Password'),
-                                        ('4', 'Card'), ('255', 'Duplicate')],
-                                       string='Category',
-                                       help="Attendance detecting methods")
+                                help='Identifier of the user on the device')
+    attendance_type = fields.Selection([
+        ('1', 'Finger'), ('15', 'Face'),
+        ('2', 'Type_2'), ('3', 'Password'),
+        ('4', 'Card'), ('255', 'Duplicate')
+    ], string='Category',
+    help='Method used to record attendance')
+    punch_type = fields.Selection([
+        ('0', 'Check In'), ('1', 'Check Out'),
+        ('2', 'Break Out'), ('3', 'Break In'),
+        ('4', 'Overtime In'), ('5', 'Overtime Out'),
+        ('255', 'Duplicate')
+    ], string='Punching Type',
+    help='Type of punch event')
     punching_time = fields.Datetime(string='Punching Time',
-                                    help="Punching time in the device")
+                                   help='Timestamp of the punch')
     address_id = fields.Many2one('res.partner', string='Working Address',
-                                 help="Working address of the employee")
+                                 help='Working address of the employee')
