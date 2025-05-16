@@ -1,2 +1,5 @@
-# sub_full_first_invoice/__init__.py
+## 1. `__init__.py` (root)
+```python
+# -*- coding: utf-8 -*-
+from . import models
 from . import wizard
