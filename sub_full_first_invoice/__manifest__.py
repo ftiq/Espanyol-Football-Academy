@@ -1,8 +1,11 @@
-# my_addons/sub_full_first_invoice/__manifest__.py
+## 2. `__manifest__.py`
+```python
 {
-    'name': 'First-of-Month First Invoice',
+    'name': 'First-of-Month Billing Adjustment',
     'version': '1.0',
     'depends': ['sale_subscription'],
     'data': [],
     'installable': True,
+    'application': False,
 }
+```
