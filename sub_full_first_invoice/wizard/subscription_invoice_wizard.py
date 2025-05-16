@@ -1,24 +1,24 @@
-# my_addons/sub_full_first_invoice/wizard/subscription_invoice_wizard.py
+## 6. `wizard/subscription_invoice_wizard.py`
+```python
+# -*- coding: utf-8 -*-
 from odoo import api, models
 
-class SaleSubscriptionInvoiceWizard(models.TransientModel):
-    _inherit = 'sale.subscription.invoice'  # هذا هو اسم الـ wizard في Odoo
+class SubscriptionInvoiceWizard(models.TransientModel):
+    _inherit = 'sale.subscription.invoice'  # adjust if your wizard's model differs
 
     @api.model
     def default_get(self, fields_list):
-        res = super().default_get(fields_list)
-        # نحصل على الاشتراك الحالي من context
-        sub = self.env['sale.subscription'].browse(self._context.get('active_id'))
-        # إذا كان لدينا تاريخ بداية اشتراك
-        ds = sub.date_start  # 'YYYY-MM-DD'
-        if ds:
-            # أول يوم من شهر البداية
-            first = ds[:7] + '-01'
-            # نوازن الحقلين في الـ wizard
-            res['date'] = first                     # تاريخ إنشاء الفاتورة
-            res['next_invoice_date'] = first        # لو كنت تريد أيضاً إعادة ضبطه
-            # نعيد توليد الفترة من بداية الاشتراك
-            start, stop = sub._get_next_period(sub._last_invoice_date)
-            # يُمكنك ضبط حقل date_range إن كان ظاهر في الـ wizard
-            res['date_range'] = (start, stop)
+        res = super(SubscriptionInvoiceWizard, self).default_get(fields_list)
+        # if coming from a sale.order, find the related subscription
+        order_id = self._context.get('active_id')
+        if order_id:
+            sub = self.env['sale.subscription'].search([
+                ('order_id', '=', order_id)], limit=1)
+            if sub and sub.date_start:
+                first = sub.date_start[:7] + '-01'
+                res.update({
+                    'date': first,
+                    'next_invoice_date': first,
+                })
         return res
+```
