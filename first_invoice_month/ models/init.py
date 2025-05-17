@@ -1,1 +1,1 @@
-from . import subscription_extension
+from . import sale_subscription
