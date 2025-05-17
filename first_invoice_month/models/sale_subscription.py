@@ -1,27 +1,15 @@
+# -*- coding: utf-8 -*-
 from odoo import models, fields, api
+from dateutil.relativedelta import relativedelta
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.model
-    def create(self, vals):
-        # اضبط تاريخ أول فاتورة على بداية الشهر
-        if vals.get('next_invoice_date'):
-            try:
-                nd = fields.Date.from_string(vals['next_invoice_date'])
-                vals['next_invoice_date'] = nd.replace(day=1)
-            except Exception:
-                pass
-        order = super().create(vals)
-        return order
-
-    def write(self, vals):
-        res = super().write(vals)
-        for order in self:
-            if order.next_invoice_date:
-                try:
-                    nd = fields.Date.from_string(order.next_invoice_date)
-                    order.next_invoice_date = nd.replace(day=1)
-                except Exception:
-                    pass
-        return res
+    @api.depends('is_subscription')
+    def _compute_start_date(self):
+        for so in self:
+            if not so.is_subscription:
+                so.start_date = False
+            elif not so.start_date:
+                # يمكنك تغيير السطر التالي لو عندك شرط معين (مثال: اليوم + 7 أيام أو حسب حقل آخر)
+                so.start_date = fields.Date.today()
