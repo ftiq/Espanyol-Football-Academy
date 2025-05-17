@@ -1,13 +1,18 @@
+# -*- coding: utf-8 -*-
 {
-    'name': 'First Invoice Month',
-    'version': '1.0',
-    'summary': 'Set next invoice date to first day of month',
-    'description': 'Automatically sets subscription next invoice date to 1st of each month',
-    'author': 'Your Name',
+    'name': 'Subscription: Set Dates to First of Month',
+    'version': '1.0.0',
+    'author': 'Your Company',
+    'category': 'Sales',
+    'summary': 'Automatically aligns subscription dates to the first day of month.',
+    'description': """
+        This module sets date_start and next_invoice_date of sale subscriptions
+        to the first day of the selected month on create and update.
+    """,
     'depends': ['sale_subscription'],
-    'data': [
-        'security/ir.model.access.csv',
-    ],
+    'data': [],
     'installable': True,
+    'auto_install': False,
     'application': False,
+    'license': 'LGPL-3',
 }
