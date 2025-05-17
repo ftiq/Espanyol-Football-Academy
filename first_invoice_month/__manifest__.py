@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Subscription: Set Dates to First of Month',
+    'name': 'Order: Set Dates to First of Month',
     'version': '1.0.0',
     'author': 'Your Company',
     'category': 'Sales',
-    'summary': 'Automatically aligns subscription dates to the first day of month.',
+    'summary': 'Automatically aligns sales order dates to the first day of month.',
     'description': """
-        This module sets date_start and next_invoice_date of sale subscriptions
-        to the first day of the selected month on create and update.
+        This module sets date fields of sales orders to the first day of the selected month on create and update.
     """,
-    'depends': ['sale_subscription'],
+    'depends': ['sale'],  # أو ['sale_management'] إذا كان هو المتوفر عندك
     'data': [],
     'installable': True,
     'auto_install': False,
