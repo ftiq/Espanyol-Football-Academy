@@ -1,15 +1,31 @@
-# -*- coding: utf-8 -*-
-from odoo import models, fields, api
-from dateutil.relativedelta import relativedelta
+from odoo import api, fields, models
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.depends('is_subscription')
-    def _compute_start_date(self):
-        for so in self:
-            if not so.is_subscription:
-                so.start_date = False
-            elif not so.start_date:
-                # يمكنك تغيير السطر التالي لو عندك شرط معين (مثال: اليوم + 7 أيام أو حسب حقل آخر)
-                so.start_date = fields.Date.today()
+    @api.model
+    def create(self, vals):
+        # عند إنشاء سجل جديد، عدّل التواريخ لأوّل الشهر إن وجدت
+        for field_name in ['start_date', 'date_order', 'next_invoice_date']:
+            date_val = vals.get(field_name)
+            if date_val:
+                try:
+                    d = fields.Date.from_string(date_val)
+                    vals[field_name] = d.replace(day=1)
+                except Exception:
+                    pass
+        return super().create(vals)
+
+    def write(self, vals):
+        res = super().write(vals)
+        # بعد التعديل، عدّل الحقول الثلاثة لو قيمتها موجودة
+        for record in self:
+            for field_name in ['start_date', 'date_order', 'next_invoice_date']:
+                date_val = getattr(record, field_name, False)
+                if date_val:
+                    try:
+                        d = fields.Date.from_string(date_val)
+                        setattr(record, field_name, d.replace(day=1))
+                    except Exception:
+                        pass
+        return res
