@@ -1,31 +1,22 @@
-from odoo import api, fields, models
+from odoo import models, fields, api
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.model
-    def create(self, vals):
-        # عند إنشاء سجل جديد، عدّل التواريخ لأوّل الشهر إن وجدت
-        for field_name in ['start_date', 'date_order', 'next_invoice_date']:
-            date_val = vals.get(field_name)
-            if date_val:
-                try:
-                    d = fields.Date.from_string(date_val)
-                    vals[field_name] = d.replace(day=1)
-                except Exception:
-                    pass
-        return super().create(vals)
-
-    def write(self, vals):
-        res = super().write(vals)
-        # بعد التعديل، عدّل الحقول الثلاثة لو قيمتها موجودة
-        for record in self:
-            for field_name in ['start_date', 'date_order', 'next_invoice_date']:
-                date_val = getattr(record, field_name, False)
-                if date_val:
-                    try:
-                        d = fields.Date.from_string(date_val)
-                        setattr(record, field_name, d.replace(day=1))
-                    except Exception:
-                        pass
-        return res
+    @api.depends('is_subscription', 'date_order', 'subscription_id', 'subscription_state')
+    def _compute_start_date(self):
+        # هذه الدالة الأصلية قد تحتوي منطق حساب متقدم، لذلك نحتاج لإعادة نفس المنطق أو جزء منه
+        for order in self:
+            # إذا لم يكن اشتراك أو ليس هناك تاريخ، خليها فارغة
+            if not order.is_subscription:
+                order.start_date = False
+            elif order.subscription_id and order.subscription_id.start_date:
+                # نفس منطق أودو: لو اشتراك مجدد، خذ بداية أول اشتراك
+                order.start_date = order.subscription_id.start_date
+            else:
+                # إذا لم يوجد، خذ تاريخ الطلب أو اليوم، وعدله لأول الشهر
+                base_date = order.date_order or fields.Date.today()
+                if isinstance(base_date, str):
+                    base_date = fields.Date.from_string(base_date)
+                # غيّر اليوم إلى 1 (أول الشهر)
+                order.start_date = base_date.replace(day=1)
