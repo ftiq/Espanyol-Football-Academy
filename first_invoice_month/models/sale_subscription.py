@@ -1,26 +1,27 @@
-from odoo import api, fields, models
+from odoo import models, fields, api
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     @api.model
     def create(self, vals):
-        # عند إنشاء أمر البيع، اجعل التاريخ لأول الشهر
-        if vals.get('date_order'):
+        # اضبط تاريخ أول فاتورة على بداية الشهر
+        if vals.get('next_invoice_date'):
             try:
-                ds = fields.Date.from_string(vals['date_order'])
-                vals['date_order'] = ds.replace(day=1)
+                nd = fields.Date.from_string(vals['next_invoice_date'])
+                vals['next_invoice_date'] = nd.replace(day=1)
             except Exception:
                 pass
-        return super().create(vals)
+        order = super().create(vals)
+        return order
 
     def write(self, vals):
         res = super().write(vals)
         for order in self:
-            if order.date_order:
+            if order.next_invoice_date:
                 try:
-                    ds = fields.Date.from_string(order.date_order)
-                    order.date_order = ds.replace(day=1)
+                    nd = fields.Date.from_string(order.next_invoice_date)
+                    order.next_invoice_date = nd.replace(day=1)
                 except Exception:
                     pass
         return res
