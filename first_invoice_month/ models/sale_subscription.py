@@ -5,36 +5,34 @@ class SaleSubscription(models.Model):
 
     @api.model
     def create(self, vals):
-        # اجعل التاريخ لأول الشهر عند إنشاء الاشتراك
+        # عدل تاريخ البدء لأول الشهر
         if vals.get('date_start'):
             try:
                 ds = fields.Date.from_string(vals['date_start'])
-                vals['date_start'] = ds.replace(day=1)
+                vals['date_start'] = fields.Date.to_string(ds.replace(day=1))
             except Exception:
                 pass
-        subscription = super().create(vals)
-        # عدل next_invoice_date بعد الإنشاء
-        if subscription.next_invoice_date:
+        # عدل تاريخ الفاتورة التالية لأول الشهر
+        if vals.get('next_invoice_date'):
             try:
-                nd = fields.Date.from_string(subscription.next_invoice_date)
-                subscription.next_invoice_date = nd.replace(day=1)
+                nd = fields.Date.from_string(vals['next_invoice_date'])
+                vals['next_invoice_date'] = fields.Date.to_string(nd.replace(day=1))
             except Exception:
                 pass
-        return subscription
+        return super().create(vals)
 
     def write(self, vals):
-        res = super().write(vals)
-        for sub in self:
-            if sub.date_start:
-                try:
-                    ds = fields.Date.from_string(sub.date_start)
-                    sub.date_start = ds.replace(day=1)
-                except Exception:
-                    pass
-            if sub.next_invoice_date:
-                try:
-                    nd = fields.Date.from_string(sub.next_invoice_date)
-                    sub.next_invoice_date = nd.replace(day=1)
-                except Exception:
-                    pass
-        return res
+        # في حال التعديل أيضاً (معالجة التواريخ في القيم المعدلة فقط)
+        if vals.get('date_start'):
+            try:
+                ds = fields.Date.from_string(vals['date_start'])
+                vals['date_start'] = fields.Date.to_string(ds.replace(day=1))
+            except Exception:
+                pass
+        if vals.get('next_invoice_date'):
+            try:
+                nd = fields.Date.from_string(vals['next_invoice_date'])
+                vals['next_invoice_date'] = fields.Date.to_string(nd.replace(day=1))
+            except Exception:
+                pass
+        return super().write(vals)
