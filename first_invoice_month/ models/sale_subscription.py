@@ -5,7 +5,6 @@ class SaleSubscription(models.Model):
 
     @api.model
     def create(self, vals):
-        # اجعل التاريخ لأول الشهر عند إنشاء الاشتراك
         if vals.get('date_start'):
             try:
                 ds = fields.Date.from_string(vals['date_start'])
@@ -13,7 +12,6 @@ class SaleSubscription(models.Model):
             except Exception:
                 pass
         subscription = super().create(vals)
-        # عدل next_invoice_date بعد الإنشاء
         if subscription.next_invoice_date:
             try:
                 nd = fields.Date.from_string(subscription.next_invoice_date)
