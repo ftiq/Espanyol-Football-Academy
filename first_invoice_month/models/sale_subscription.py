@@ -1,26 +1,19 @@
-# -*- coding: utf-8 -*-
 from odoo import models, fields, api
-from dateutil.relativedelta import relativedelta
 
-class SaleSubscription(models.Model):
-    _inherit = 'sale.orde'
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
 
-    @api.model
-    def _get_next_recurring_date(self, last_date, interval_type, interval_number):
-        """Compute the next recurring date based on last_date and interval.
-        
-        Args:
-            last_date (date): The date of the last invoice
-            interval_type (str): 'daily', 'weekly', 'monthly', or 'yearly'
-            interval_number (int): Number of intervals to add
-            
-        Returns:
-            date: The next recurring date
-        """
-        if interval_type == 'monthly':
-            return last_date + relativedelta(months=interval_number)
-        elif interval_type == 'yearly':
-            return last_date + relativedelta(years=interval_number)
-        # For other interval types, fall back to default implementation
-        return super(SaleSubscription, self)._get_next_recurring_date(
-            last_date, interval_type, interval_number)
+    @api.depends('date_order')
+    def _compute_start_date(self):
+        for order in self:
+            if order.date_order:
+                # حول date_order لأول يوم في الشهر
+                try:
+                    d = fields.Date.from_string(order.date_order)
+                    order.start_date = d.replace(day=1)
+                except Exception:
+                    order.start_date = order.date_order
+            else:
+                # إذا لم يوجد تاريخ طلب، أول يوم من الشهر الحالي
+                today = fields.Date.today()
+                order.start_date = today.replace(day=1)
