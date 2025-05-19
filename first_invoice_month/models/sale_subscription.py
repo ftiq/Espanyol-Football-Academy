@@ -3,7 +3,7 @@ from odoo import models, fields, api
 from dateutil.relativedelta import relativedelta
 
 class SaleSubscription(models.Model):
-    _inherit = 'sale.subscription'
+    _inherit = 'sale.orde'
 
     @api.model
     def _get_next_recurring_date(self, last_date, interval_type, interval_number):
