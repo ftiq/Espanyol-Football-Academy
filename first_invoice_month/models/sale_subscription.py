@@ -1,19 +1,18 @@
+# -*- coding: utf-8 -*-
 from odoo import models, fields, api
+from dateutil.relativedelta import relativedelta
 
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+class SaleSubscription(models.Model):
+    _inherit = 'sale.subscription'
 
-    @api.depends('date_order')
-    def _compute_start_date(self):
-        for order in self:
-            if order.date_order:
-                # حول date_order لأول يوم في الشهر
-                try:
-                    d = fields.Date.from_string(order.date_order)
-                    order.start_date = d.replace(day=1)
-                except Exception:
-                    order.start_date = order.date_order
-            else:
-                # إذا لم يوجد تاريخ طلب، أول يوم من الشهر الحالي
-                today = fields.Date.today()
-                order.start_date = today.replace(day=1)
+    @api.model
+    def _get_next_recurring_date(self, last_date, interval_type, interval_number):
+        # لو تريد أن تحسب من تاريخ بداية الاشتراك وليس من نهاية الشهر
+        # last_date: هو تاريخ آخر فاتورة
+        # نعيد التاريخ بزيادة شهر كامل من آخر تاريخ فاتورة
+        if interval_type == 'monthly':
+            return last_date + relativedelta(months=interval_number)
+        elif interval_type == 'yearly':
+            return last_date + relativedelta(years=interval_number)
+        # بقية الأنواع نفس الكود الافتراضي
+        return super()._get_next_recurring_date(last_date, interval_type, interval_number)
