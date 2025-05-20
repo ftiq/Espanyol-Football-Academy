@@ -7,7 +7,7 @@
         This module integrates biometric devices with club subscription system.
         Members can access using their biometric ID when subscription is active.
     """,
-    'depends': ['base', 'biometric_device_integration'],
+    'depends': ['base', 'hr_zk_attendance'],
     'data': [
         'security/ir.model.access.csv',
         'views/partner_biometric_views.xml',
