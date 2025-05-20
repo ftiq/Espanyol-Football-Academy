@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_subscription_tree" model="ir.ui.view">
+        <field name="name">subscription.tree</field>
+        <field name="model">club.subscription</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="partner_id"/>
+                <field name="biometric_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_subscription_form" model="ir.ui.view">
+        <field name="name">subscription.form</field>
+        <field name="model">club.subscription</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="biometric_id" readonly="1"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="active"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_subscription" model="ir.actions.act_window">
+        <field name="name">Club Subscriptions</field>
+        <field name="res_model">club.subscription</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_subscription_root" name="Club Management"
+              parent="base.menu_custom" sequence="30"/>
+    <menuitem id="menu_subscription" name="Member Subscriptions"
+              parent="menu_subscription_root" action="action_subscription"/>
+</odoo>

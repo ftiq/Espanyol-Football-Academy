@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_club_subscription,access_club_subscription,model_club_subscription,,1,1,1,1
+access_biometric_attendance,access_biometric_attendance,model_zk_machine_attendance,,1,1,1,1
