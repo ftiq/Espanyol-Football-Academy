@@ -1,5 +1,5 @@
 {
-    'name': 'Repzo API',
+    'name': 'Xtra API',
     'version': '1.0',
     'category': 'Hidden',
     'summary': 'Custom API to export contacts, salesmen, and visit logs',
