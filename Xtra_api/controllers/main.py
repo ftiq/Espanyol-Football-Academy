@@ -1,7 +1,7 @@
 from odoo import http
 from odoo.http import request
 
-class RepzoAPIController(http.Controller):
+class XtraAPIController(http.Controller):
 
     @http.route('/api/contacts', type='json', auth='user', methods=['GET'], csrf=False)
     def get_contacts(self):
